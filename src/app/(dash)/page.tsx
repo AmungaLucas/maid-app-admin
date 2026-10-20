@@ -120,14 +120,14 @@ export default function OverviewPage() {
           ) : (
             <ul className="divide-y divide-slate-100">
               {data.recentAudit.map((a) => (
-                <li key={a.id} className="py-2 flex items-center justify-between gap-3 text-sm">
+                <li key={a.id} className="py-2 flex items-start justify-between gap-3 text-sm">
                   <div className="min-w-0">
-                    <span className="font-medium text-slate-700">{a.actor_email}</span>
+                    <span className="font-medium text-slate-700 break-all">{a.actor_email}</span>
                     <span className="text-slate-400"> · </span>
-                    <span className="font-mono text-xs text-brand-700">{a.action}</span>
+                    <span className="font-mono text-xs text-brand-700 break-all">{a.action}</span>
                     {a.reason && <span className="block text-xs text-slate-400 truncate">“{a.reason}”</span>}
                   </div>
-                  <span className="text-xs text-slate-400 whitespace-nowrap tnum">{fmtDate(a.created_at)}</span>
+                  <span className="text-xs text-slate-400 whitespace-nowrap tnum shrink-0">{fmtDate(a.created_at)}</span>
                 </li>
               ))}
             </ul>

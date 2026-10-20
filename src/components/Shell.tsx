@@ -193,7 +193,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </main>
 
-        <footer className="px-6 py-4 text-[11px] text-slate-400 flex items-center justify-between">
+        <footer className="px-4 sm:px-6 py-4 text-[11px] text-slate-400 flex flex-col sm:flex-row gap-1 sm:items-center sm:justify-between">
           <span>JobReady · HelpNest ops console</span>
           <span>Gateway build 2026-10-20.11</span>
         </footer>

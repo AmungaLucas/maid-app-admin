@@ -58,8 +58,8 @@ export default function KycPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="min-w-0">
           <PageHeader
             title="KYC review"
             sub={
@@ -70,7 +70,7 @@ export default function KycPage() {
             }
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {["pending", "approved", "rejected"].map((s) => (
             <Button key={s} small variant={status === s ? "primary" : "ghost"} onClick={() => setStatus(s)}>
               {s}
@@ -97,7 +97,7 @@ export default function KycPage() {
             }
             right={<span className="text-xs text-slate-400">{fmtDate(docs[0].submittedAt)}</span>}
           >
-            <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
               {docs.map((doc) => (
                 <a
                   key={doc.docId}
@@ -108,9 +108,9 @@ export default function KycPage() {
                 >
                   {doc.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={doc.url} alt={doc.kind} className="w-full h-28 object-cover" />
+                    <img src={doc.url} alt={doc.kind} className="w-full h-36 sm:h-28 object-cover" />
                   ) : (
-                    <div className="w-full h-28 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
+                    <div className="w-full h-36 sm:h-28 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
                       no image
                     </div>
                   )}
@@ -126,7 +126,7 @@ export default function KycPage() {
             )}
 
             {status === "pending" && (
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button small variant="subtle" onClick={() => setActing({ docs: docs.filter((d) => d.status === "pending"), mode: "approve" })}>
                   Approve pending docs
                 </Button>

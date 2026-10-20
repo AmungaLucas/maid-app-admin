@@ -6,13 +6,17 @@ import {
   Badge,
   Button,
   Card,
+  CardList,
   Empty,
   Field,
   inputCls,
+  MCard,
+  MRow,
   Modal,
   PageHeader,
   Icon,
   Spinner,
+  TableWrap,
   Td,
   Th
 } from "@/components/ui";
@@ -66,8 +70,37 @@ export default function AdminsPage() {
           {data.admins.length === 0 ? (
             <Empty>No dashboard accounts.</Empty>
           ) : (
-            <div className="overflow-x-auto -mx-4 -my-4">
-              <table className="min-w-full divide-y divide-slate-100">
+            <>
+              {/* Mobile: stacked cards */}
+              <CardList>
+                {data.admins.map((a) => (
+                  <MCard key={a.id}>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="font-medium text-slate-800 truncate">{a.email}</span>
+                      <Badge tone={a.active ? "green" : "red"}>{a.active ? "active" : "deactivated"}</Badge>
+                    </div>
+                    <MRow
+                      label="Role"
+                      value={
+                        <span className="flex items-center gap-1.5">
+                          <Badge tone={a.role === "admin" ? "blue" : a.role === "finance" ? "green" : "violet"}>{a.role}</Badge>
+                        </span>
+                      }
+                    />
+                    <MRow label="Can" value={ROLE_NOTES[a.role]} />
+                    <MRow label="Last login" value={a.lastLoginAt ? fmtDate(a.lastLoginAt) : "never"} />
+                    <MRow label="Created" value={fmtDate(a.createdAt)} />
+                    <div className="mt-2">
+                      <Button small variant="ghost" onClick={() => toggle(a)}>
+                        {a.active ? "Deactivate" : "Activate"}
+                      </Button>
+                    </div>
+                  </MCard>
+                ))}
+              </CardList>
+
+              {/* sm+: table */}
+              <TableWrap>
                 <thead>
                   <tr>
                     <Th>Email</Th><Th>Role</Th><Th>Status</Th><Th>Last login</Th><Th>Created</Th><Th></Th>
@@ -96,8 +129,8 @@ export default function AdminsPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </TableWrap>
+            </>
           )}
         </Card>
       )}

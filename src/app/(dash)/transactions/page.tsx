@@ -6,13 +6,17 @@ import {
   Badge,
   Button,
   Card,
+  CardList,
   Empty,
   Field,
   inputCls,
+  MCard,
+  MRow,
   Modal,
   PageHeader,
   Pagination,
   Spinner,
+  TableWrap,
   Td,
   Th,
   statusTone
@@ -98,8 +102,46 @@ export default function TransactionsPage() {
           {data.transactions.length === 0 ? (
             <Empty>No transactions match.</Empty>
           ) : (
-            <div className="overflow-x-auto -mx-4 -my-4">
-              <table className="min-w-full divide-y divide-slate-100">
+            <>
+              {/* Mobile: stacked cards */}
+              <CardList>
+                {data.transactions.map((t) => (
+                  <MCard key={t.id}>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="font-medium text-slate-800 truncate">{t.user_name}</span>
+                      <span className="font-semibold tnum">{kes(t.amount_kes)}</span>
+                    </div>
+                    <div className="text-xs text-slate-400 mb-2">{t.phone} · {t.user_role}</div>
+                    <MRow label="Plan" value={t.plan} />
+                    <MRow label="Status" value={<Badge tone={statusTone(t.status)}>{t.status}</Badge>} />
+                    <MRow label="Receipt" value={<span className="font-mono text-xs">{t.mpesa_receipt || "—"}</span>} />
+                    <MRow
+                      label="Refund"
+                      value={
+                        t.reversal_status === "pending" ? (
+                          <Badge tone="amber">reversing…</Badge>
+                        ) : t.reversal_status === "success" ? (
+                          <Badge tone="red">reversed</Badge>
+                        ) : (
+                          "—"
+                        )
+                      }
+                    />
+                    <MRow label="When" value={fmtDate(t.created_at)} />
+                    {t.result_desc && t.status !== "success" && (
+                      <p className="mt-1.5 text-[11px] text-slate-400 break-words">{t.result_desc}</p>
+                    )}
+                    {mayReverse && t.status === "success" && !t.reversal_status && (
+                      <div className="mt-2">
+                        <Button small variant="ghost" onClick={() => setReversing(t)}>Reverse…</Button>
+                      </div>
+                    )}
+                  </MCard>
+                ))}
+              </CardList>
+
+              {/* sm+: table */}
+              <TableWrap>
                 <thead>
                   <tr>
                     <Th>User</Th><Th>Plan</Th><Th right>Amount</Th><Th>Status</Th><Th>Receipt</Th><Th>Refund</Th><Th>When</Th><Th></Th>
@@ -135,8 +177,8 @@ export default function TransactionsPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </TableWrap>
+            </>
           )}
           <Pagination page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />
         </Card>

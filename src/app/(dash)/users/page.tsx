@@ -7,12 +7,16 @@ import {
   Badge,
   Button,
   Card,
+  CardList,
   Empty,
   Field,
   inputCls,
+  MCard,
+  MRow,
   PageHeader,
   Pagination,
   Spinner,
+  TableWrap,
   Td,
   Th,
   statusTone
@@ -105,8 +109,42 @@ export default function UsersPage() {
           {data.users.length === 0 ? (
             <Empty>No users match these filters.</Empty>
           ) : (
-            <div className="overflow-x-auto -mx-4 -my-4">
-              <table className="min-w-full divide-y divide-slate-100">
+            <>
+              {/* Mobile: stacked cards */}
+              <CardList>
+                {data.users.map((u) => (
+                  <MCard key={u.id}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span
+                        className={`w-9 h-9 rounded-full inline-flex items-center justify-center text-[11px] font-bold text-white shrink-0 ${
+                          u.role === "maid"
+                            ? "bg-gradient-to-br from-violet-400 to-violet-600"
+                            : "bg-gradient-to-br from-sky-400 to-sky-600"
+                        }`}
+                      >
+                        {(u.name || "?").slice(0, 2).toUpperCase()}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <Link
+                          href={`/users/${u.id}`}
+                          className="font-medium text-slate-800 hover:text-brand-700 transition-colors block truncate"
+                        >
+                          {u.name}
+                        </Link>
+                        <div className="text-xs text-slate-400 tnum truncate">{u.phone}</div>
+                      </div>
+                    </div>
+                    <MRow label="Role" value={<Badge tone={u.role === "maid" ? "violet" : "blue"}>{u.role}</Badge>} />
+                    <MRow label="Verification" value={<Badge tone={statusTone(u.kycStatus)}>{u.kycStatus}</Badge>} />
+                    <MRow label="Status" value={<Badge tone={statusTone(u.accountStatus)}>{u.accountStatus}</Badge>} />
+                    <MRow label="Credits" value={u.activeCredits} strong />
+                    <MRow label="Joined" value={ago(u.createdAt)} />
+                  </MCard>
+                ))}
+              </CardList>
+
+              {/* sm+: table */}
+              <TableWrap>
                 <thead>
                   <tr>
                     <Th>User</Th>
@@ -152,8 +190,8 @@ export default function UsersPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </TableWrap>
+            </>
           )}
           <Pagination page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />
         </Card>

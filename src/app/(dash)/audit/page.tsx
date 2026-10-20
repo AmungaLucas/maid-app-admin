@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, Card, Empty, PageHeader, Pagination, Spinner, Td, Th } from "@/components/ui";
+import { Badge, Card, CardList, Empty, MCard, MRow, PageHeader, Pagination, Spinner, TableWrap, Td, Th } from "@/components/ui";
 import { useApi } from "@/lib/api";
 import { fmtDate } from "@/lib/format";
 
@@ -88,8 +88,31 @@ export default function AuditPage() {
           {data.entries.length === 0 ? (
             <Empty>No audit entries match.</Empty>
           ) : (
-            <div className="overflow-x-auto -mx-4 -my-4">
-              <table className="min-w-full divide-y divide-slate-100">
+            <>
+              {/* Mobile: stacked cards */}
+              <CardList>
+                {data.entries.map((e) => (
+                  <MCard key={e.id}>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="font-mono text-xs text-brand-700 break-all">{e.action}</span>
+                      <Badge tone={e.actor_role === "admin" ? "blue" : e.actor_role === "finance" ? "green" : "violet"}>{e.actor_role}</Badge>
+                    </div>
+                    <MRow label="Actor" value={e.actor_email} />
+                    <MRow label="Target" value={e.target_id ? `${e.target_type || "—"} · ${e.target_id.slice(0, 12)}` : e.target_type || "—"} />
+                    <MRow label="Reason" value={e.reason || "—"} />
+                    <MRow label="When" value={fmtDate(e.created_at)} />
+                    {(e.before || e.after) && (
+                      <details className="mt-1.5 text-xs">
+                        <summary className="cursor-pointer text-slate-500 hover:text-slate-700">view changes</summary>
+                        <pre className="mt-1 bg-slate-50 rounded p-2 overflow-x-auto text-[10px] whitespace-pre-wrap break-all">{e.before ? pretty(e.before) : ""}{e.after ? pretty(e.after) : ""}</pre>
+                      </details>
+                    )}
+                  </MCard>
+                ))}
+              </CardList>
+
+              {/* sm+: table */}
+              <TableWrap>
                 <thead>
                   <tr>
                     <Th>When</Th><Th>Actor</Th><Th>Action</Th><Th>Target</Th><Th>Reason</Th><Th>Changes</Th>
@@ -121,8 +144,8 @@ export default function AuditPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </TableWrap>
+            </>
           )}
           <Pagination page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />
         </Card>

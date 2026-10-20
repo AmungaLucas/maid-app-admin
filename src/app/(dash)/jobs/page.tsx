@@ -7,13 +7,17 @@ import {
   Badge,
   Button,
   Card,
+  CardList,
   Empty,
   Field,
   inputCls,
+  MCard,
+  MRow,
   Modal,
   PageHeader,
   Pagination,
   Spinner,
+  TableWrap,
   Td,
   Th,
   statusTone
@@ -91,8 +95,37 @@ export default function JobsPage() {
           {data.jobs.length === 0 ? (
             <Empty>No jobs match.</Empty>
           ) : (
-            <div className="overflow-x-auto -mx-4 -my-4">
-              <table className="min-w-full divide-y divide-slate-100">
+            <>
+              {/* Mobile: stacked cards */}
+              <CardList>
+                {data.jobs.map((j) => (
+                  <MCard key={j.id}>
+                    <div className="font-medium text-slate-800">{j.title}</div>
+                    <div className="text-xs text-slate-400 mb-2">{j.category} · {j.location_label || "—"}</div>
+                    <MRow
+                      label="Employer"
+                      value={
+                        <span className="flex items-center gap-1.5">
+                          <Link href={`/users/${j.employer_id}`} className="text-brand-700 hover:underline">{j.employer_name}</Link>
+                          <Badge tone={statusTone(j.employer_status)}>{j.employer_status}</Badge>
+                        </span>
+                      }
+                    />
+                    <MRow label="Rate" value={j.rate_kes ? kes(j.rate_kes) : "—"} strong />
+                    <MRow label="Applicants" value={j.applicationsCount} strong />
+                    <MRow label="Status" value={<Badge tone={statusTone(j.status)}>{j.status}</Badge>} />
+                    <MRow label="Window" value={j.expires_at ? `until ${fmtDate(j.expires_at)}` : "—"} />
+                    {j.status !== "closed" && (
+                      <div className="mt-2">
+                        <Button small variant="ghost" onClick={() => setClosing(j)}>Close…</Button>
+                      </div>
+                    )}
+                  </MCard>
+                ))}
+              </CardList>
+
+              {/* sm+: table */}
+              <TableWrap>
                 <thead>
                   <tr>
                     <Th>Job</Th><Th>Employer</Th><Th right>Rate</Th><Th right>Applicants</Th><Th>Status</Th><Th>Window</Th><Th></Th>
@@ -121,8 +154,8 @@ export default function JobsPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              </TableWrap>
+            </>
           )}
           <Pagination page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />
         </Card>

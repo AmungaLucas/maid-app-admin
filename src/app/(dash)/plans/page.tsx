@@ -6,12 +6,16 @@ import {
   Badge,
   Button,
   Card,
+  CardList,
   Field,
   inputCls,
+  MCard,
+  MRow,
   Modal,
   PageHeader,
   Icon,
   Spinner,
+  TableWrap,
   Td,
   Th
 } from "@/components/ui";
@@ -50,7 +54,7 @@ export default function PlansPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <PageHeader
             title="Plans &amp; pricing"
             sub={
@@ -75,53 +79,84 @@ export default function PlansPage() {
 
       {data && (
         <Card>
-          <div className="overflow-x-auto -mx-4 -my-4">
-            <table className="min-w-full divide-y divide-slate-100">
-              <thead>
-                <tr>
-                  <Th>Plan</Th><Th>Role</Th><Th right>Price</Th><Th>Window</Th><Th>Grants</Th><Th>Flags</Th><Th right>Order</Th><Th></Th>
+          {/* Mobile: stacked cards */}
+          <CardList>
+            {data.plans.map((p) => (
+              <MCard key={p.code}>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <div className="min-w-0">
+                    <div className="font-medium text-slate-800 truncate">{p.label}</div>
+                    <div className="font-mono text-[10px] text-slate-400">{p.code}</div>
+                  </div>
+                  <span className={`font-semibold tnum shrink-0 ${p.active ? "" : "line-through opacity-50"}`}>{kes(p.amountKes)}</span>
+                </div>
+                <MRow label="Role" value={<Badge tone={p.role === "maid" ? "violet" : p.role === "employer" ? "blue" : "slate"}>{p.role || "any"}</Badge>} />
+                <MRow label="Window" value={p.windowDays ? `${p.windowDays} days` : "—"} />
+                <MRow
+                  label="Grants"
+                  value={p.grants.length === 0 ? "—" : p.grants.map((g) => `${g.qty}× ${g.kind}${g.windowDays ? `/${g.windowDays}d` : ""}`).join(" + ")}
+                />
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {p.isSubscription && <Badge tone="green">subscription</Badge>}
+                  {p.workerScoped && <Badge tone="amber">worker-scoped</Badge>}
+                  {p.legacy && <Badge tone="slate">legacy</Badge>}
+                  {!p.active && <Badge tone="red">inactive</Badge>}
+                </div>
+                {editable && (
+                  <div className="mt-2">
+                    <Button small variant="ghost" onClick={() => setEditing(p)}>Edit</Button>
+                  </div>
+                )}
+              </MCard>
+            ))}
+          </CardList>
+
+          {/* sm+: table */}
+          <TableWrap>
+            <thead>
+              <tr>
+                <Th>Plan</Th><Th>Role</Th><Th right>Price</Th><Th>Window</Th><Th>Grants</Th><Th>Flags</Th><Th right>Order</Th><Th></Th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {data.plans.map((p) => (
+                <tr key={p.code} className={p.active ? "" : "opacity-50"}>
+                  <Td>
+                    <div className="font-medium">{p.label}</div>
+                    <div className="font-mono text-xs text-slate-400">{p.code}</div>
+                  </Td>
+                  <Td>
+                    <Badge tone={p.role === "maid" ? "violet" : p.role === "employer" ? "blue" : "slate"}>
+                      {p.role || "any"}
+                    </Badge>
+                  </Td>
+                  <Td right className="font-semibold">{kes(p.amountKes)}</Td>
+                  <Td>{p.windowDays ? `${p.windowDays} days` : "—"}</Td>
+                  <Td>
+                    {p.grants.length === 0
+                      ? "—"
+                      : p.grants
+                          .map((g) => `${g.qty}× ${g.kind}${g.windowDays ? `/${g.windowDays}d` : ""}`)
+                          .join(" + ")}
+                  </Td>
+                  <Td>
+                    <div className="flex flex-wrap gap-1">
+                      {p.isSubscription && <Badge tone="green">subscription</Badge>}
+                      {p.workerScoped && <Badge tone="amber">worker-scoped</Badge>}
+                      {p.legacy && <Badge tone="slate">legacy</Badge>}
+                      {!p.active && <Badge tone="red">inactive</Badge>}
+                    </div>
+                  </Td>
+                  <Td right>{p.displayOrder}</Td>
+                  <Td right>
+                    {editable && (
+                      <Button small variant="ghost" onClick={() => setEditing(p)}>Edit</Button>
+                    )}
+                  </Td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {data.plans.map((p) => (
-                  <tr key={p.code} className={p.active ? "" : "opacity-50"}>
-                    <Td>
-                      <div className="font-medium">{p.label}</div>
-                      <div className="font-mono text-xs text-slate-400">{p.code}</div>
-                    </Td>
-                    <Td>
-                      <Badge tone={p.role === "maid" ? "violet" : p.role === "employer" ? "blue" : "slate"}>
-                        {p.role || "any"}
-                      </Badge>
-                    </Td>
-                    <Td right className="font-semibold">{kes(p.amountKes)}</Td>
-                    <Td>{p.windowDays ? `${p.windowDays} days` : "—"}</Td>
-                    <Td>
-                      {p.grants.length === 0
-                        ? "—"
-                        : p.grants
-                            .map((g) => `${g.qty}× ${g.kind}${g.windowDays ? `/${g.windowDays}d` : ""}`)
-                            .join(" + ")}
-                    </Td>
-                    <Td>
-                      <div className="flex flex-wrap gap-1">
-                        {p.isSubscription && <Badge tone="green">subscription</Badge>}
-                        {p.workerScoped && <Badge tone="amber">worker-scoped</Badge>}
-                        {p.legacy && <Badge tone="slate">legacy</Badge>}
-                        {!p.active && <Badge tone="red">inactive</Badge>}
-                      </div>
-                    </Td>
-                    <Td right>{p.displayOrder}</Td>
-                    <Td right>
-                      {editable && (
-                        <Button small variant="ghost" onClick={() => setEditing(p)}>Edit</Button>
-                      )}
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </TableWrap>
         </Card>
       )}
 
@@ -279,7 +314,7 @@ function EditPlanModal({
             Grants — what one successful purchase creates in the ledger
           </div>
           {grants.map((g, i) => (
-            <div key={i} className="grid grid-cols-[1fr_80px_80px_36px] gap-2 mb-2 items-center">
+            <div key={i} className="grid grid-cols-[1fr_64px_64px_32px] min-[420px]:grid-cols-[1fr_80px_80px_36px] gap-2 mb-2 items-center">
               <select
                 className={inputCls}
                 value={g.kind}
@@ -493,7 +528,7 @@ function GrantsEditor({ grants, setGrants }: { grants: Grant[]; setGrants: (g: G
     <div className="border border-slate-200 rounded-lg p-3 mb-3">
       <div className="text-xs font-medium text-slate-600 mb-2">Grants</div>
       {grants.map((g, i) => (
-        <div key={i} className="grid grid-cols-[1fr_80px_80px_36px] gap-2 mb-2 items-center">
+        <div key={i} className="grid grid-cols-[1fr_64px_64px_32px] min-[420px]:grid-cols-[1fr_80px_80px_36px] gap-2 mb-2 items-center">
           <select className={inputCls} value={g.kind} onChange={(e) => setGrants(grants.map((x, j) => (j === i ? { ...x, kind: e.target.value as Grant["kind"] } : x)))}>
             <option value="chat">chat</option>
             <option value="job_post">job_post</option>

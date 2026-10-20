@@ -8,11 +8,15 @@ import {
   Badge,
   Button,
   Card,
+  CardList,
   Empty,
   Field,
   inputCls,
+  MCard,
+  MRow,
   Modal,
   Spinner,
+  TableWrap,
   Td,
   Th,
   statusTone
@@ -92,21 +96,21 @@ export default function UserDetailPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
+        <div className="min-w-0">
           <Link href="/users" className="text-xs text-slate-400 hover:text-slate-600">← All users</Link>
-          <h1 className="text-lg font-semibold flex items-center gap-2">
-            {u.name}
+          <h1 className="text-lg font-semibold flex flex-wrap items-center gap-2 mt-0.5">
+            <span className="truncate">{u.name}</span>
             <Badge tone={u.role === "maid" ? "violet" : "blue"}>{u.role}</Badge>
             <Badge tone={statusTone(u.kycStatus)}>{u.kycStatus}</Badge>
             <Badge tone={statusTone(u.accountStatus)}>{u.accountStatus}</Badge>
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 break-words">
             {u.phone} · {u.email} · joined {fmtDate(u.createdAt)}
           </p>
         </div>
         {actionsAllowed && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 shrink-0">
             <Button variant="ghost" onClick={() => setStatusOpen(true)}>Change status…</Button>
             <Button variant="ghost" onClick={() => setCreditOpen(true)}>Adjust credits…</Button>
           </div>
@@ -141,8 +145,26 @@ export default function UserDetailPage() {
         {data.transactions.length === 0 ? (
           <Empty>No payments.</Empty>
         ) : (
-          <div className="overflow-x-auto -mx-4 -my-4">
-            <table className="min-w-full divide-y divide-slate-100">
+          <>
+            {/* Mobile: stacked cards */}
+            <CardList>
+              {data.transactions.map((t) => (
+                <MCard key={t.id}>
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="font-mono text-xs text-slate-500">{shortId(t.id)}</span>
+                    <span className="font-semibold tnum">{kes(t.amount_kes)}</span>
+                  </div>
+                  <MRow label="Plan" value={t.plan} />
+                  <MRow label="Status" value={<Badge tone={statusTone(t.status)}>{t.status}</Badge>} />
+                  <MRow label="Receipt" value={<span className="font-mono text-xs">{t.mpesa_receipt || "—"}</span>} />
+                  <MRow label="Refund" value={t.reversal_id ? <Badge tone="amber">in flight</Badge> : "—"} />
+                  <MRow label="When" value={fmtDate(t.created_at)} />
+                </MCard>
+              ))}
+            </CardList>
+
+            {/* sm+: table */}
+            <TableWrap>
               <thead>
                 <tr>
                   <Th>Txn</Th><Th>Plan</Th><Th right>Amount</Th><Th>Status</Th><Th>Receipt</Th><Th>Refund</Th><Th>When</Th>
@@ -161,8 +183,8 @@ export default function UserDetailPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+            </TableWrap>
+          </>
         )}
       </Card>
 
@@ -258,8 +280,25 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 function EntitlementTable({ rows }: { rows: Entitlement[] }) {
   if (!rows.length) return <Empty>No credits or passes.</Empty>;
   return (
-    <div className="overflow-x-auto -mx-4 -my-4">
-      <table className="min-w-full divide-y divide-slate-100">
+    <>
+      {/* Mobile: stacked cards */}
+      <CardList>
+        {rows.map((e) => (
+          <MCard key={e.id}>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <Badge tone={e.kind === "chat" ? "blue" : e.kind === "apply" ? "violet" : "green"}>{e.kind}</Badge>
+              <Badge tone={e.status === "active" ? "green" : e.status === "revoked" ? "red" : "slate"}>{e.status}</Badge>
+            </div>
+            <MRow label="Source" value={<span className="font-mono text-xs">{e.source}</span>} />
+            <MRow label="Expires" value={e.expires_at ? fmtDate(e.expires_at) : "never"} />
+            <MRow label="Consumed" value={e.consumed_at ? fmtDate(e.consumed_at) : "—"} />
+            <MRow label="Granted" value={fmtDate(e.created_at)} />
+          </MCard>
+        ))}
+      </CardList>
+
+      {/* sm+: table */}
+      <TableWrap>
         <thead>
           <tr>
             <Th>Kind</Th><Th>Source</Th><Th>Status</Th><Th>Expires</Th><Th>Consumed</Th><Th>Granted</Th>
@@ -277,8 +316,8 @@ function EntitlementTable({ rows }: { rows: Entitlement[] }) {
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </TableWrap>
+    </>
   );
 }
 

@@ -188,12 +188,60 @@ export function PageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
+    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <div className="min-w-0">
+        <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
         {sub && <p className="mt-0.5 text-sm text-slate-500">{sub}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex items-center gap-2 flex-wrap">{actions}</div>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile card list — table alternative below the sm breakpoint         */
+/* ------------------------------------------------------------------ */
+
+export function CardList({ children }: { children: React.ReactNode }) {
+  return <div className="divide-y divide-slate-100 sm:hidden">{children}</div>;
+}
+
+export function MCard({
+  children,
+  onClick
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className={`py-3.5 first:pt-1 last:pb-1 ${onClick ? "cursor-pointer active:bg-slate-50 -mx-1 px-1 rounded-lg" : ""}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function MRow({
+  label,
+  value,
+  strong
+}: {
+  label: string;
+  value: React.ReactNode;
+  strong?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-0.5">
+      <span className="text-[11px] uppercase tracking-wide text-slate-400 shrink-0">{label}</span>
+      <span
+        className={`text-sm text-right min-w-0 truncate ${strong ? "font-semibold text-slate-800" : "text-slate-600"}`}
+      >
+        {value}
+      </span>
     </div>
   );
 }
@@ -253,19 +301,21 @@ export function Stat({
 }) {
   const t = STAT_TONES[tone] || STAT_TONES.default;
   return (
-    <div className="group bg-white border border-slate-200/80 rounded-2xl shadow-card p-4 hover:shadow-lift hover:-translate-y-0.5 transition-all duration-200">
+    <div className="group bg-white border border-slate-200/80 rounded-2xl shadow-card p-3.5 sm:p-4 hover:shadow-lift sm:hover:-translate-y-0.5 transition-all duration-200 min-w-0">
       <div className="flex items-start justify-between gap-2">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400 leading-tight">
           {label}
         </div>
         {icon && (
-          <span className={`inline-flex w-8 h-8 rounded-xl items-center justify-center ${t.tile}`}>
+          <span className={`inline-flex w-7 h-7 sm:w-8 sm:h-8 rounded-xl items-center justify-center shrink-0 ${t.tile}`}>
             <Icon name={icon} className="w-4 h-4" />
           </span>
         )}
       </div>
-      <div className={`tnum mt-2 text-[26px] leading-8 font-semibold ${t.text}`}>{value}</div>
-      {sub && <div className="mt-1 text-xs text-slate-400">{sub}</div>}
+      <div className={`tnum mt-1.5 sm:mt-2 text-[20px] sm:text-[26px] leading-7 sm:leading-8 font-semibold truncate ${t.text}`}>
+        {value}
+      </div>
+      {sub && <div className="mt-1 text-[11px] sm:text-xs text-slate-400 truncate">{sub}</div>}
     </div>
   );
 }
@@ -406,25 +456,25 @@ export function Modal({
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
       <div
         className="absolute inset-0 bg-ink-900/50 backdrop-blur-[2px] animate-fade-in"
         onClick={onClose}
       />
       <div
-        className={`relative bg-white rounded-2xl shadow-pop w-full ${wide ? "max-w-2xl" : "max-w-md"} max-h-[90vh] overflow-y-auto animate-scale-in`}
+        className={`relative bg-white shadow-pop w-full sm:w-auto ${wide ? "sm:max-w-2xl" : "sm:max-w-md"} max-h-[92vh] sm:max-h-[90vh] overflow-y-auto animate-scale-in rounded-t-2xl sm:rounded-2xl`}
       >
-        <header className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur rounded-t-2xl">
-          <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+        <header className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur rounded-t-2xl">
+          <h3 className="text-sm font-semibold text-slate-800 pr-2">{title}</h3>
           <button
             onClick={onClose}
-            className="w-7 h-7 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="w-8 h-8 -mr-1.5 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
             aria-label="Close"
           >
             <Icon name="x" className="w-4 h-4" />
           </button>
         </header>
-        <div className="p-5">{children}</div>
+        <div className="p-4 sm:p-5">{children}</div>
       </div>
     </div>
   );
@@ -535,6 +585,18 @@ export function Toaster() {
 /* Tables                                                              */
 /* ------------------------------------------------------------------ */
 
+// Contained horizontal scroll for wide tables. Sits INSIDE the card
+// padding — the old -mx/-my full-bleed trick made tables overlap the
+// card frame and adjacent blocks on phones. sm+ gets the framed table;
+// below sm pages render CardList cards instead.
+export function TableWrap({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="hidden sm:block overflow-x-auto rounded-xl ring-1 ring-slate-100">
+      <table className="min-w-full divide-y divide-slate-100">{children}</table>
+    </div>
+  );
+}
+
 export function Th({ children, right }: { children?: React.ReactNode; right?: boolean }) {
   return (
     <th
@@ -578,7 +640,7 @@ export function Pagination({
 }) {
   const pages = Math.max(1, Math.ceil(total / pageSize));
   return (
-    <div className="flex items-center justify-between pt-4 mt-1 border-t border-slate-100 px-1">
+    <div className="flex flex-wrap items-center justify-between gap-2 pt-4 mt-4 border-t border-slate-100 px-1">
       <span className="text-xs text-slate-400 tnum">
         {total.toLocaleString()} record{total === 1 ? "" : "s"} · page {page} of {pages}
       </span>
@@ -613,7 +675,7 @@ export function Bars({
   if (!data.length) return <Empty>No data in this window.</Empty>;
   return (
     <div>
-      <div className="relative flex items-end gap-[3px] h-40">
+      <div className="relative flex items-end gap-[3px] h-32 sm:h-40">
         {/* gridlines */}
         {[0.25, 0.5, 0.75, 1].map((g) => (
           <div
@@ -649,7 +711,7 @@ export function Bars({
           );
         })}
       </div>
-      <div className="flex gap-[3px] mt-1.5">
+      <div className="hidden sm:flex gap-[3px] mt-1.5">
         {data.map((d, i) => (
           <span key={i} className="flex-1 text-[9px] text-slate-300 truncate text-center">
             {String(d[labelKey]).slice(5)}
