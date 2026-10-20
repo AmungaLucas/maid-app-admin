@@ -1,8 +1,10 @@
-# HelpNest Admin
+# Maid App Admin (HelpNest / JobReady)
 
-Operations dashboard for HelpNest (Maid Finder Kenya) — users, pricing,
-payments + M-Pesa reversals, KYC review, jobs moderation, PRD §21 metrics
-and the §19.2 audit trail.
+Operations dashboard for HelpNest — JobReady (Maid Finder Kenya) — users,
+pricing, payments + M-Pesa reversals, KYC review, jobs moderation, PRD §21
+metrics and the §19.2 audit trail.
+
+Repo: `github.com/AmungaLucas/maid-app-admin` · Live: `admin.jobready.co.ke`
 
 Next.js 14 (App Router) + TypeScript + Tailwind, zero other runtime deps.
 All data comes from the gateway admin API (`/api/admin/*` on
@@ -47,12 +49,13 @@ entitlements from the reversed payment are revoked automatically.
 
 ## Deploy (Vercel)
 
-1. Push this repo to GitHub (done — see below).
-2. Vercel → Add New → Project → import the repo.
-3. Environment variable: `GATEWAY_URL=https://gateway.jobready.co.ke`
-4. Deploy. Every push to main auto-deploys.
-5. Custom domain: Vercel → Project → Settings → Domains → add
-   `admin.jobready.co.ke`, then in cPanel Zone Editor add:
+The project is deployed from this repo via the Vercel CLI; every push to
+`main` can be re-deployed with `npx vercel --prod`. Environment variable
+set on the project: `GATEWAY_URL=https://gateway.jobready.co.ke`
+(falls back to that URL in code if unset).
+
+Custom domain `admin.jobready.co.ke` is attached to the project. If it ever
+needs re-pointing, in cPanel Zone Editor add:
 
 ```
 Type  Name   Target
