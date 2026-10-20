@@ -9,7 +9,10 @@ export const can = {
   kycReview: (r: Role) => r === "admin" || r === "support",
   jobActions: (r: Role) => r === "admin" || r === "support",
   reverse: (r: Role) => r === "admin" || r === "finance",
-  adminsManage: (r: Role) => r === "admin"
+  adminsManage: (r: Role) => r === "admin",
+  referralSettings: (r: Role) => r === "admin",
+  referralPayout: (r: Role) => r === "admin" || r === "finance",
+  referralReject: (r: Role) => r === "admin"
 };
 
 export const NAV: {
@@ -26,6 +29,7 @@ export const NAV: {
   { href: "/jobs", label: "Jobs", roles: ["admin", "support", "finance"], icon: "jobs", group: "Operations" },
   { href: "/plans", label: "Plans & Pricing", roles: ["admin", "support", "finance"], icon: "plans", group: "Money" },
   { href: "/transactions", label: "Transactions", roles: ["admin", "support", "finance"], icon: "transactions", group: "Money" },
+  { href: "/referrals", label: "Referrals", roles: ["admin", "support", "finance"], icon: "gift", group: "Money" },
   { href: "/audit", label: "Audit Trail", roles: ["admin", "support", "finance"], icon: "audit", group: "Governance" },
   { href: "/admins", label: "Dashboard Team", roles: ["admin"], icon: "team", group: "Governance" }
 ];
