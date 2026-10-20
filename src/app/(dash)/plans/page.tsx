@@ -9,6 +9,8 @@ import {
   Field,
   inputCls,
   Modal,
+  PageHeader,
+  Icon,
   Spinner,
   Td,
   Th
@@ -49,13 +51,17 @@ export default function PlansPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">Plans &amp; pricing</h1>
-          <p className="text-sm text-slate-500">
-            Live from the <code className="text-xs bg-slate-100 px-1 rounded">plans</code> table — edits apply to
-            <strong> new purchases only</strong> (PRD §6.2), no redeploy needed.
-          </p>
+          <PageHeader
+            title="Plans &amp; pricing"
+            sub={
+              <>
+                Live from the <code className="text-xs bg-slate-100 px-1 rounded">plans</code> table — edits apply to
+                <strong> new purchases only</strong> (PRD §6.2), no redeploy needed.
+              </>
+            }
+          />
         </div>
-        {editable && <Button onClick={() => setCreating(true)}>+ New plan</Button>}
+        {editable && <Button onClick={() => setCreating(true)}><Icon name="plus" className="w-4 h-4" /> New plan</Button>}
       </div>
 
       {!editable && (

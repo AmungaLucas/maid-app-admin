@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Bars, Card, Spinner, Stat } from "@/components/ui";
+import { Alert, Bars, Card, PageHeader, Spinner, Stat } from "@/components/ui";
 import { useApi } from "@/lib/api";
 import { kes } from "@/lib/format";
 
@@ -65,8 +65,7 @@ export default function MetricsPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">Metrics</h1>
-          <p className="text-sm text-slate-500">PRD §21.1 metric definitions computed live.</p>
+          <PageHeader title="Metrics" sub="PRD §21.1 metric definitions computed live." />
         </div>
         <div className="flex gap-2 items-center">
           {[7, 30, 90].map((d) => (

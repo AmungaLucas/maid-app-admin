@@ -10,6 +10,7 @@ import {
   Empty,
   Field,
   inputCls,
+  PageHeader,
   Pagination,
   Spinner,
   Td,
@@ -58,13 +59,11 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold">Users</h1>
-          <p className="text-sm text-slate-500">Maids and employers on the platform.</p>
-        </div>
-        <Button small variant="ghost" onClick={() => refetch()}>Refresh</Button>
-      </div>
+      <PageHeader
+        title="Users"
+        sub="Maids and employers on the platform."
+        actions={<Button small variant="ghost" onClick={() => refetch()}>Refresh</Button>}
+      />
 
       <Card>
         <form onSubmit={apply} className="grid sm:grid-cols-5 gap-2 items-end">
@@ -122,10 +121,26 @@ export default function UsersPage() {
                   {data.users.map((u) => (
                     <tr key={u.id} className="hover:bg-slate-50">
                       <Td>
-                        <Link href={`/users/${u.id}`} className="font-medium text-brand-700 hover:underline">
-                          {u.name}
-                        </Link>
-                        <div className="text-xs text-slate-400">{u.phone}</div>
+                        <div className="flex items-center gap-3">
+                          <span
+                            className={`w-8 h-8 rounded-full inline-flex items-center justify-center text-[11px] font-bold text-white shrink-0 ${
+                              u.role === "maid"
+                                ? "bg-gradient-to-br from-violet-400 to-violet-600"
+                                : "bg-gradient-to-br from-sky-400 to-sky-600"
+                            }`}
+                          >
+                            {(u.name || "?").slice(0, 2).toUpperCase()}
+                          </span>
+                          <div className="min-w-0">
+                            <Link
+                              href={`/users/${u.id}`}
+                              className="font-medium text-slate-800 hover:text-brand-700 transition-colors"
+                            >
+                              {u.name}
+                            </Link>
+                            <div className="text-xs text-slate-400 tnum">{u.phone}</div>
+                          </div>
+                        </div>
                       </Td>
                       <Td>
                         <Badge tone={u.role === "maid" ? "violet" : "blue"}>{u.role}</Badge>

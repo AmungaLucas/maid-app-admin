@@ -11,6 +11,7 @@ import {
   Field,
   inputCls,
   Modal,
+  PageHeader,
   Pagination,
   Spinner,
   Td,
@@ -58,12 +59,10 @@ export default function JobsPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold">Jobs</h1>
-        <p className="text-sm text-slate-500">
-          Published listings and their applicants. Closing a listing is immediate and audit-trailed.
-        </p>
-      </div>
+      <PageHeader
+        title="Jobs"
+        sub="Published listings and their applicants. Closing a listing is immediate and audit-trailed."
+      />
 
       {msg && <Alert kind={msg.kind}>{msg.text}</Alert>}
 

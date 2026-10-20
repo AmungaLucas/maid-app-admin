@@ -1,6 +1,6 @@
 "use client";
 
-import { Bars, Card, Stat, Spinner, Alert, Badge } from "@/components/ui";
+import { Bars, Card, Stat, Spinner, Alert, Badge, PageHeader, Icon } from "@/components/ui";
 import { useApi } from "@/lib/api";
 import { fmtDate, kes } from "@/lib/format";
 
@@ -45,43 +45,53 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-lg font-semibold">Overview</h1>
-        <p className="text-sm text-slate-500">Live platform health and revenue.</p>
-      </div>
+      <PageHeader
+        title="Overview"
+        sub="Live platform health and revenue."
+        actions={
+          <span className="inline-flex items-center gap-1.5 text-xs text-slate-400">
+            <Icon name="clock" className="w-3.5 h-3.5" /> auto-refreshes on reload
+          </span>
+        }
+      />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Stat label="Users" value={data.users.total} sub={`${maids.total} maids · ${employers.total} employers`} />
+        <Stat label="Users" value={data.users.total} sub={`${maids.total} maids · ${employers.total} employers`} icon="users" />
         <Stat
           label="Revenue today"
           value={kes(data.revenue.todayKes)}
           sub={`${data.revenue.todayCount} payment${data.revenue.todayCount === 1 ? "" : "s"}`}
           tone="good"
+          icon="wallet"
         />
         <Stat
           label="Revenue 7 days"
           value={kes(data.revenue.last7dKes)}
           sub={`${data.revenue.last7dCount} payments`}
           tone="good"
+          icon="activity"
         />
         <Stat
           label="Failed payments 7d"
           value={data.revenue.failedLast7d}
           tone={data.revenue.failedLast7d > 5 ? "bad" : "default"}
+          icon="alert"
         />
-        <Stat label="Active subscriptions" value={data.activeSubscriptions} sub="7-day plans live now" />
+        <Stat label="Active subscriptions" value={data.activeSubscriptions} sub="7-day plans live now" icon="verified" />
         <Stat
           label="Pending KYC"
           value={data.pendingKyc}
           tone={data.pendingKyc > 0 ? "warn" : "default"}
           sub={data.pendingKyc > 0 ? "needs review" : "queue clear"}
+          icon="kyc"
         />
-        <Stat label="Open jobs" value={data.openJobs} sub="within 30-day window" />
+        <Stat label="Open jobs" value={data.openJobs} sub="within 30-day window" icon="jobs" />
         <Stat
           label="Pending reversals"
           value={data.pendingReversals}
           tone={data.pendingReversals > 0 ? "warn" : "default"}
           sub="M-Pesa money-back in flight"
+          icon="transactions"
         />
       </div>
 
@@ -96,7 +106,7 @@ export default function OverviewPage() {
 
       <div className="grid lg:grid-cols-3 gap-4">
         <Card title="Verification">
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2.5 text-sm">
             <Row label="Maids verified" value={`${maids.verified} / ${maids.total}`} />
             <Row label="Employers verified" value={`${employers.verified} / ${employers.total}`} />
             <Row label="Suspended accounts" value={maids.suspended + employers.suspended} />
@@ -117,7 +127,7 @@ export default function OverviewPage() {
                     <span className="font-mono text-xs text-brand-700">{a.action}</span>
                     {a.reason && <span className="block text-xs text-slate-400 truncate">“{a.reason}”</span>}
                   </div>
-                  <span className="text-xs text-slate-400 whitespace-nowrap">{fmtDate(a.created_at)}</span>
+                  <span className="text-xs text-slate-400 whitespace-nowrap tnum">{fmtDate(a.created_at)}</span>
                 </li>
               ))}
             </ul>

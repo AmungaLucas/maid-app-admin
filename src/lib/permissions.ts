@@ -17,18 +17,28 @@ export const NAV: {
   label: string;
   roles: Role[];
   icon: string;
+  group: "Insights" | "Operations" | "Money" | "Governance";
 }[] = [
-  { href: "/", label: "Overview", roles: ["admin", "support", "finance"], icon: "◧" },
-  { href: "/users", label: "Users", roles: ["admin", "support", "finance"], icon: "◉" },
-  { href: "/plans", label: "Plans & Pricing", roles: ["admin", "support", "finance"], icon: "KSh" },
-  { href: "/transactions", label: "Transactions", roles: ["admin", "support", "finance"], icon: "⇄" },
-  { href: "/kyc", label: "KYC Review", roles: ["admin", "support"], icon: "☑" },
-  { href: "/jobs", label: "Jobs", roles: ["admin", "support", "finance"], icon: "▤" },
-  { href: "/metrics", label: "Metrics", roles: ["admin", "support", "finance"], icon: "▲" },
-  { href: "/audit", label: "Audit Trail", roles: ["admin", "support", "finance"], icon: "≡" },
-  { href: "/admins", label: "Dashboard Team", roles: ["admin"], icon: "⛨" }
+  { href: "/", label: "Overview", roles: ["admin", "support", "finance"], icon: "overview", group: "Insights" },
+  { href: "/metrics", label: "Metrics", roles: ["admin", "support", "finance"], icon: "metrics", group: "Insights" },
+  { href: "/users", label: "Users", roles: ["admin", "support", "finance"], icon: "users", group: "Operations" },
+  { href: "/kyc", label: "KYC Review", roles: ["admin", "support"], icon: "kyc", group: "Operations" },
+  { href: "/jobs", label: "Jobs", roles: ["admin", "support", "finance"], icon: "jobs", group: "Operations" },
+  { href: "/plans", label: "Plans & Pricing", roles: ["admin", "support", "finance"], icon: "plans", group: "Money" },
+  { href: "/transactions", label: "Transactions", roles: ["admin", "support", "finance"], icon: "transactions", group: "Money" },
+  { href: "/audit", label: "Audit Trail", roles: ["admin", "support", "finance"], icon: "audit", group: "Governance" },
+  { href: "/admins", label: "Dashboard Team", roles: ["admin"], icon: "team", group: "Governance" }
 ];
 
+const GROUP_ORDER: NavGroup[] = ["Insights", "Operations", "Money", "Governance"];
+export type NavGroup = "Insights" | "Operations" | "Money" | "Governance";
+
 export function navFor(role: Role) {
-  return NAV.filter((item) => item.roles.includes(role));
+  const items = NAV.filter((item) => item.roles.includes(role));
+  const groups: { name: NavGroup; items: typeof NAV }[] = [];
+  for (const g of GROUP_ORDER) {
+    const inGroup = items.filter((i) => i.group === g);
+    if (inGroup.length) groups.push({ name: g, items: inGroup });
+  }
+  return groups;
 }

@@ -10,6 +10,8 @@ import {
   Field,
   inputCls,
   Modal,
+  PageHeader,
+  Icon,
   Spinner,
   Td,
   Th
@@ -49,13 +51,11 @@ export default function AdminsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold">Dashboard team</h1>
-          <p className="text-sm text-slate-500">Role separation per PRD §19.1. App accounts can never log in here.</p>
-        </div>
-        <Button onClick={() => setCreating(true)}>+ Add member</Button>
-      </div>
+      <PageHeader
+        title="Dashboard team"
+        sub="Role separation per PRD §19.1. App accounts can never log in here."
+        actions={<Button onClick={() => setCreating(true)}><Icon name="plus" className="w-4 h-4" /> Add member</Button>}
+      />
 
       {msg && <Alert kind={msg.kind}>{msg.text}</Alert>}
       {error && <Alert kind="error">{error}</Alert>}

@@ -11,6 +11,7 @@ import {
   Field,
   inputCls,
   Modal,
+  PageHeader,
   Spinner,
   statusTone
 } from "@/components/ui";
@@ -59,11 +60,15 @@ export default function KycPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">KYC review</h1>
-          <p className="text-sm text-slate-500">
-            Identity verification queue — approving all three docs of a user flips them to
-            <strong> verified</strong> and grants the one-time welcome bonus (PRD §4, §7.4).
-          </p>
+          <PageHeader
+            title="KYC review"
+            sub={
+              <>
+                Identity verification queue — approving all three docs of a user flips them to
+                <strong> verified</strong> and grants the one-time welcome bonus (PRD §4, §7.4).
+              </>
+            }
+          />
         </div>
         <div className="flex gap-2">
           {["pending", "approved", "rejected"].map((s) => (

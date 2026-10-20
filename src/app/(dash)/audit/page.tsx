@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, Card, Empty, Pagination, Spinner, Td, Th } from "@/components/ui";
+import { Badge, Card, Empty, PageHeader, Pagination, Spinner, Td, Th } from "@/components/ui";
 import { useApi } from "@/lib/api";
 import { fmtDate } from "@/lib/format";
 
@@ -43,12 +43,10 @@ export default function AuditPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold">Audit trail</h1>
-        <p className="text-sm text-slate-500">
-          Every privileged dashboard action with actor, reason and before/after (PRD §19.2). Immutable.
-        </p>
-      </div>
+      <PageHeader
+        title="Audit trail"
+        sub="Every privileged dashboard action with actor, reason and before/after (PRD §19.2). Immutable."
+      />
 
       <Card>
         <form onSubmit={apply} className="grid sm:grid-cols-3 gap-2 items-end">

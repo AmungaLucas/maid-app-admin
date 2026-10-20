@@ -10,6 +10,7 @@ import {
   Field,
   inputCls,
   Modal,
+  PageHeader,
   Pagination,
   Spinner,
   Td,
@@ -62,12 +63,10 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold">Transactions</h1>
-        <p className="text-sm text-slate-500">
-          Every M-Pesa STK attempt. Successful payments can be reversed (money moves back via Daraja Reversal).
-        </p>
-      </div>
+      <PageHeader
+        title="Transactions"
+        sub="Every M-Pesa STK attempt. Successful payments can be reversed (money moves back via Daraja Reversal)."
+      />
 
       {msg && <Alert kind={msg.kind === "info" ? "info" : msg.kind}>{msg.text}</Alert>}
 
