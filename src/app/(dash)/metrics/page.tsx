@@ -16,6 +16,16 @@ type Metrics = {
     signupCount: number;
     subscriptionBuyers: number;
     applications: number;
+    employerViewsPerJob: number;
+    renewalRate: number | null;
+    renewalEligible: number;
+    renewalCount: number;
+    dropOffAfterFirstPayment: number | null;
+    firstTimePayers: number;
+    jobsWithApplicationsPct: number | null;
+    publishedJobs: number;
+    employerResponsePct: number | null;
+    refundRatePct: number | null;
   };
   planPopularity: { plan: string; count: number; amountKes: number }[];
   revenueSeries: { date: string; amountKes: number; count: number }[];
@@ -41,6 +51,16 @@ export default function MetricsPage() {
       ["signups", String(data.metrics.signupCount)],
       ["subscription_buyers", String(data.metrics.subscriptionBuyers)],
       ["applications", String(data.metrics.applications)],
+      ["employer_views_per_job", String(data.metrics.employerViewsPerJob ?? "")],
+      ["renewal_rate_pct", String(data.metrics.renewalRate ?? "")],
+      ["renewal_eligible", String(data.metrics.renewalEligible)],
+      ["renewal_count", String(data.metrics.renewalCount)],
+      ["drop_off_after_first_payment_pct", String(data.metrics.dropOffAfterFirstPayment ?? "")],
+      ["first_time_payers", String(data.metrics.firstTimePayers)],
+      ["jobs_with_applications_pct", String(data.metrics.jobsWithApplicationsPct ?? "")],
+      ["published_jobs", String(data.metrics.publishedJobs)],
+      ["employer_response_pct", String(data.metrics.employerResponsePct ?? "")],
+      ["refund_rate_pct", String(data.metrics.refundRatePct ?? "")],
       [],
       ["plan", "count", "revenue_kes"],
       ...data.planPopularity.map((p) => [p.plan, String(p.count), String(p.amountKes)]),
@@ -113,6 +133,47 @@ export default function MetricsPage() {
               value={data.metrics.verificationCompletedWithin7d}
               sub="KYC completions (PRD §21.1)"
               tone="good"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <Stat
+              label="Employer views / job"
+              value={data.metrics.employerViewsPerJob}
+              sub="unique maid views (PRD §21.1)"
+            />
+            <Stat
+              label="Renewal rate"
+              value={data.metrics.renewalRate == null ? "—" : `${data.metrics.renewalRate}%`}
+              sub={`${data.metrics.renewalCount} renewed / ${data.metrics.renewalEligible} eligible`}
+              tone="good"
+            />
+            <Stat
+              label="Drop-off after 1st payment"
+              value={data.metrics.dropOffAfterFirstPayment == null ? "—" : `${data.metrics.dropOffAfterFirstPayment}%`}
+              sub={`${data.metrics.firstTimePayers} first-time payers`}
+              tone={
+                data.metrics.dropOffAfterFirstPayment != null &&
+                data.metrics.dropOffAfterFirstPayment > 50
+                  ? "warn"
+                  : "default"
+              }
+            />
+            <Stat
+              label="Jobs with applications"
+              value={data.metrics.jobsWithApplicationsPct == null ? "—" : `${data.metrics.jobsWithApplicationsPct}%`}
+              sub={`${data.metrics.publishedJobs} published (PRD §21.2)`}
+            />
+            <Stat
+              label="Employer response rate"
+              value={data.metrics.employerResponsePct == null ? "—" : `${data.metrics.employerResponsePct}%`}
+              sub="applications viewed/decided"
+              tone="good"
+            />
+            <Stat
+              label="Refund rate"
+              value={data.metrics.refundRatePct == null ? "—" : `${data.metrics.refundRatePct}%`}
+              sub="successful reversals / payments"
             />
           </div>
 
