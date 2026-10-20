@@ -81,6 +81,12 @@ const ICON_PATHS: Record<string, React.ReactNode> = {
       <path d="M12 8s.8-4 3.5-4a1.9 1.9 0 0 1 1.9 1.9C17.4 7.5 15.5 8 12 8Z" />
     </>
   ),
+  chat: (
+    <>
+      <path d="M21 11.8a7.8 7.8 0 0 1-7.8 7.8H4.6l2.1-3A7.8 7.8 0 1 1 21 11.8Z" />
+      <path d="M8.6 10.4h6.8M8.6 13.4h4.2" />
+    </>
+  ),
   logout: (
     <>
       <path d="M14.5 4H17a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-2.5" />
