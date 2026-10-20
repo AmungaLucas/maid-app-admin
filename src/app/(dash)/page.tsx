@@ -20,7 +20,7 @@ type Overview = {
   activeSubscriptions: number;
   pendingKyc: number;
   openJobs: number;
-  pendingReversals: number;
+  pendingRefunds: number;
   revenueSeries: { date: string; amountKes: number; count: number }[];
   signupSeries: { date: string; count: number }[];
   recentAudit: {
@@ -87,10 +87,10 @@ export default function OverviewPage() {
         />
         <Stat label="Open jobs" value={data.openJobs} sub="within 30-day window" icon="jobs" />
         <Stat
-          label="Pending reversals"
-          value={data.pendingReversals}
-          tone={data.pendingReversals > 0 ? "warn" : "default"}
-          sub="M-Pesa money-back in flight"
+          label="Pending refunds"
+          value={data.pendingRefunds}
+          tone={data.pendingRefunds > 0 ? "warn" : "default"}
+          sub="user requests awaiting manual refund"
           icon="transactions"
         />
       </div>

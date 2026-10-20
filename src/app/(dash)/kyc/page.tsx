@@ -23,6 +23,8 @@ type Doc = {
   userId: string;
   userName: string;
   userPhone: string;
+  userEmail: string | null;
+  userEmailVerified: boolean | null;
   userKycStatus: string;
   kind: string;
   status: string;
@@ -90,9 +92,12 @@ export default function KycPage() {
           <Card
             key={userId}
             title={
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 flex-wrap">
                 <Link href={`/users/${userId}`} className="text-brand-700 hover:underline">{docs[0].userName}</Link>
                 <Badge tone={statusTone(docs[0].userKycStatus)}>{docs[0].userKycStatus}</Badge>
+                {docs[0].userEmailVerified === false && (
+                  <Badge tone="amber">email unverified</Badge>
+                )}
               </span>
             }
             right={<span className="text-xs text-slate-400">{fmtDate(docs[0].submittedAt)}</span>}
@@ -123,6 +128,12 @@ export default function KycPage() {
 
             {docs[0].status === "rejected" && docs[0].rejectionReason && (
               <p className="text-xs text-rose-600 mb-2">Rejected: {docs[0].rejectionReason}</p>
+            )}
+
+            {docs[0].userEmailVerified === false && (
+              <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-100 rounded p-2 mb-2">
+                Email not verified yet — approval is blocked until the user verifies from <strong>Account → Verify email</strong> (PRD §4.2: verified = phone + email + ID review).
+              </p>
             )}
 
             {status === "pending" && (

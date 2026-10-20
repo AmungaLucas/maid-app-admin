@@ -65,13 +65,13 @@ export default function LoginPage() {
             <span className="text-brand-400">one console.</span>
           </h1>
           <p className="mt-3 text-sm text-slate-400 leading-6">
-            Users, KYC, pricing, M-Pesa payments and reversals, jobs moderation
+            Users, KYC, pricing, M-Pesa payments and manual refunds, jobs moderation
             and the full audit trail — governed by role, logged on every action.
           </p>
           <div className="mt-8 grid grid-cols-3 gap-3">
             {[
               { icon: "users", label: "Users & dossiers" },
-              { icon: "wallet", label: "M-Pesa + reversals" },
+              { icon: "wallet", label: "M-Pesa + refunds" },
               { icon: "metrics", label: "PRD §21 metrics" }
             ].map((f) => (
               <div

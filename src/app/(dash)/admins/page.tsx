@@ -34,8 +34,8 @@ type Admin = {
 
 const ROLE_NOTES: Record<string, string> = {
   admin: "Everything, including managing the dashboard team.",
-  support: "Users, credits, KYC review, jobs moderation. No pricing, no reversals.",
-  finance: "Pricing, pay options, transactions, M-Pesa reversals. No bans, no KYC."
+  support: "Users, credits, KYC review, jobs moderation. No pricing, no refunds.",
+  finance: "Pricing, pay options, transactions, M-Pesa manual refunds. No bans, no KYC."
 };
 
 export default function AdminsPage() {

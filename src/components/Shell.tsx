@@ -13,7 +13,7 @@ const TITLES: Record<string, { t: string; s: string }> = {
   "/": { t: "Overview", s: "Live platform health and revenue" },
   "/users": { t: "Users", s: "Maids and employers on the platform" },
   "/plans": { t: "Plans & Pricing", s: "Pricing is served from the database — edits apply to new purchases instantly" },
-  "/transactions": { t: "Transactions", s: "M-Pesa payments, grants and reversals" },
+  "/transactions": { t: "Transactions", s: "M-Pesa payments, grants and manual refunds" },
   "/kyc": { t: "KYC Review", s: "Identity documents awaiting verification" },
   "/jobs": { t: "Jobs", s: "Listings across the 30-day publication window" },
   "/metrics": { t: "Metrics", s: "PRD §21 growth and funnel indicators" },
@@ -195,7 +195,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
         <footer className="px-4 sm:px-6 py-4 text-[11px] text-slate-400 flex flex-col sm:flex-row gap-1 sm:items-center sm:justify-between">
           <span>JobReady · HelpNest ops console</span>
-          <span>Gateway build 2026-10-20.14</span>
+          <span>Gateway build 2026-10-21.15</span>
         </footer>
       </div>
     </div>
