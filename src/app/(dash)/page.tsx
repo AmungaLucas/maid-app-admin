@@ -4,6 +4,49 @@ import { Bars, Card, Stat, Spinner, Alert, Badge, PageHeader, Icon } from "@/com
 import { useApi } from "@/lib/api";
 import { fmtDate, kes } from "@/lib/format";
 
+// SLA board — response targets from PRD §15.3 / §4.8 / v1.0 §10.2. The
+// gateway computes open counts + oldest-item age per queue; the panel
+// just colors the breaches.
+function SlaPanel() {
+  const { data, loading, error } = useApi<{
+    queues: { queue: string; open: number; oldestHours: number | null; targetHours: number; breached: boolean }[];
+  }>("admin/sla");
+
+  const LABELS: Record<string, string> = {
+    kyc: "KYC review",
+    fast_track: "Fast-track reviews",
+    appeals: "Appeals",
+    refund_requests: "Refund requests",
+    chat_reports: "Flagged chats"
+  };
+
+  return (
+    <Card title="SLA board">
+      {loading && <Spinner />}
+      {error && <Alert kind="error">{error}</Alert>}
+      {data && (
+        <div className="space-y-2 text-sm">
+          {data.queues.map((q) => (
+            <div key={q.queue} className="flex items-center justify-between gap-2">
+              <span className="text-slate-600">{LABELS[q.queue] || q.queue}</span>
+              <span className="flex items-center gap-2">
+                <span className={"tnum font-semibold " + (q.open > 0 ? "text-slate-800" : "text-slate-400")}>
+                  {q.open}
+                </span>
+                {q.open > 0 && (
+                  <Badge tone={q.breached ? "red" : "green"}>
+                    {q.oldestHours != null ? `${q.oldestHours}h / ${q.targetHours}h` : `target ${q.targetHours}h`}
+                  </Badge>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 type Overview = {
   users: {
     total: number;
@@ -104,7 +147,7 @@ export default function OverviewPage() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-4 gap-4">
         <Card title="Verification">
           <div className="space-y-2.5 text-sm">
             <Row label="Maids verified" value={`${maids.verified} / ${maids.total}`} />
@@ -113,6 +156,8 @@ export default function OverviewPage() {
             <Row label="Restricted accounts" value={maids.restricted + employers.restricted} />
           </div>
         </Card>
+
+        <SlaPanel />
 
         <Card title="Recent dashboard activity" className="lg:col-span-2">
           {data.recentAudit.length === 0 ? (

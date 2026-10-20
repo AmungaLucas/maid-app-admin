@@ -87,6 +87,17 @@ const ICON_PATHS: Record<string, React.ReactNode> = {
       <path d="M8.6 10.4h6.8M8.6 13.4h4.2" />
     </>
   ),
+  flag: (
+    <>
+      <path d="M5.5 21V4.5" />
+      <path d="M5.5 5h12.5l-2.5 4 2.5 4H5.5" />
+    </>
+  ),
+  boost: (
+    <>
+      <path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12l1-8Z" />
+    </>
+  ),
   logout: (
     <>
       <path d="M14.5 4H17a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-2.5" />
@@ -392,6 +403,7 @@ export function statusTone(status: string | null | undefined): keyof typeof BADG
       return "amber";
     case "failed":
     case "suspended":
+    case "banned":
     case "rejected":
     case "timeout":
       return "red";

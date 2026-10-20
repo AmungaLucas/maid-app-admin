@@ -339,6 +339,9 @@ function StatusModal({
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  const role = (roleFromCookie() || "admin") as "admin" | "support" | "finance";
+  const mayBan = can.ban(role);
+
   const submit = async () => {
     setBusy(true);
     setErr(null);
@@ -355,9 +358,12 @@ function StatusModal({
   return (
     <Modal open={open} title="Change account status" onClose={onClose}>
       {err && <Alert kind="error">{err}</Alert>}
-      <Field label="New status" hint="Suspended blocks every API call for this user (PRD §3.2). Restricted is recorded and surfaced; per-action limits land later.">
+      <Field
+        label="New status"
+        hint="Suspended blocks every API call (PRD §3.2). Banned is permanent and admin-only — the user can still file an appeal from support channels. Restricted keeps browsing but blocks commercial actions."
+      >
         <select className={inputCls} value={status} onChange={(e) => setStatus(e.target.value)}>
-          {["active", "restricted", "suspended"].map((s) => (
+          {["active", "restricted", "suspended", ...(mayBan ? ["banned"] : [])].map((s) => (
             <option key={s} value={s}>{s}</option>
           ))}
         </select>
@@ -365,7 +371,7 @@ function StatusModal({
       <Field label="Reason (required, audit-trailed)">
         <textarea className={inputCls} rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Why is this status changing?" />
       </Field>
-      <Button onClick={submit} disabled={busy || reason.trim().length < 3} variant={status === "suspended" ? "danger" : "primary"}>
+      <Button onClick={submit} disabled={busy || reason.trim().length < 3} variant={status === "suspended" || status === "banned" ? "danger" : "primary"}>
         {busy ? "Saving…" : `Set ${status}`}
       </Button>
     </Modal>
