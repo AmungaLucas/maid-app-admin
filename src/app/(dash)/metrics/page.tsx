@@ -27,6 +27,14 @@ type Metrics = {
     employerResponsePct: number | null;
     refundRatePct: number | null;
   };
+  hireMetrics: {
+    conversations: number;
+    confirmedHires: number;
+    chatToHirePct: number | null;
+    publishedJobs: number;
+    matchesPer100Posts: number | null;
+    reviewsPublished: number;
+  } | null;
   planPopularity: { plan: string; count: number; amountKes: number }[];
   revenueSeries: { date: string; amountKes: number; count: number }[];
   applicationSeries: { date: string; count: number }[];
@@ -176,6 +184,25 @@ export default function MetricsPage() {
               sub="successful reversals / payments"
             />
           </div>
+
+          {data.hireMetrics && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <Stat
+                label="Chat-to-hire rate"
+                value={data.hireMetrics.chatToHirePct == null ? "—" : `${data.hireMetrics.chatToHirePct}%`}
+                sub={`${data.hireMetrics.confirmedHires} of ${data.hireMetrics.conversations} conversations`}
+                tone="good"
+              />
+              <Stat
+                label="Matches per 100 posts"
+                value={data.hireMetrics.matchesPer100Posts == null ? "—" : data.hireMetrics.matchesPer100Posts}
+                sub={`${data.hireMetrics.publishedJobs} published jobs`}
+                tone="good"
+              />
+              <Stat label="Confirmed hires" value={data.hireMetrics.confirmedHires} sub="both-party confirmations" />
+              <Stat label="Published reviews" value={data.hireMetrics.reviewsPublished} sub="live on profiles" />
+            </div>
+          )}
 
           <div className="grid lg:grid-cols-2 gap-4">
             <Card title={`Revenue — last ${data.windowDays} days`}>
