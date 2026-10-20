@@ -21,7 +21,7 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Guard pages only — everything under /api/* is the server-side gateway
-  // proxy (it enforces its own auth via the gateway JWT).
-  matcher: ["/((?!api/|_next|favicon.ico).*)"]
+  // Guard pages only — /admin-api/* is the server-side gateway proxy (it
+  // enforces its own auth via the gateway JWT). "api/" excluded for safety.
+  matcher: ["/((?!admin-api|api/|_next|favicon.ico).*)"]
 };
