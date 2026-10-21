@@ -17,6 +17,7 @@ const TITLES: Record<string, { t: string; s: string }> = {
   "/kyc": { t: "KYC Review", s: "Identity documents awaiting verification" },
   "/jobs": { t: "Jobs", s: "Listings across the 30-day publication window" },
   "/metrics": { t: "Metrics", s: "PRD §21 growth and funnel indicators" },
+  "/reports": { t: "Reports", s: "User reports about profiles and jobs — 24h response target" },
   "/audit": { t: "Audit Trail", s: "Every dashboard action, who did it and why" },
   "/admins": { t: "Dashboard Team", s: "Admin, support and finance accounts" }
 };

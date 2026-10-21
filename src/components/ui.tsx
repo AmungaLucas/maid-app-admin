@@ -93,6 +93,13 @@ const ICON_PATHS: Record<string, React.ReactNode> = {
       <path d="M5.5 5h12.5l-2.5 4 2.5 4H5.5" />
     </>
   ),
+  reports: (
+    <>
+      <path d="M12 3 3.5 6.2v5.3c0 4.6 3.4 8 8.5 9.5 5.1-1.5 8.5-4.9 8.5-9.5V6.2L12 3Z" />
+      <path d="M12 8.5v4.5" />
+      <circle cx="12" cy="16" r=".5" fill="currentColor" />
+    </>
+  ),
   boost: (
     <>
       <path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12l1-8Z" />

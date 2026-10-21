@@ -18,6 +18,7 @@ export const can = {
   chatUnrestrict: (r: Role) => r === "admin",
   ban: (r: Role) => r === "admin",
   appealDecide: (r: Role) => r === "admin" || r === "support",
+  reportDecide: (r: Role) => r === "admin" || r === "support",
   promotionCancel: (r: Role) => r === "admin"
 };
 
@@ -38,6 +39,7 @@ export const NAV: {
   { href: "/referrals", label: "Referrals", roles: ["admin", "support", "finance"], icon: "gift", group: "Money" },
   { href: "/chats", label: "Chats", roles: ["admin", "support", "finance"], icon: "chat", group: "Operations" },
   { href: "/appeals", label: "Appeals", roles: ["admin", "support", "finance"], icon: "flag", group: "Operations" },
+  { href: "/reports", label: "Reports", roles: ["admin", "support", "finance"], icon: "reports", group: "Operations" },
   { href: "/reviews", label: "Reviews", roles: ["admin", "support", "finance"], icon: "star", group: "Operations" },
   { href: "/promotions", label: "Promotions", roles: ["admin", "support", "finance"], icon: "boost", group: "Money" },
   { href: "/audit", label: "Audit Trail", roles: ["admin", "support", "finance"], icon: "audit", group: "Governance" },
