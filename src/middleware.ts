@@ -23,5 +23,8 @@ export function middleware(req: NextRequest) {
 export const config = {
   // Guard pages only — /admin-api/* is the server-side gateway proxy (it
   // enforces its own auth via the gateway JWT). "api/" excluded for safety.
-  matcher: ["/((?!admin-api|api/|_next|favicon.ico).*)"]
+  // Auth gate for every page. Exemptions: the admin API proxy, the gateway
+  // proxy, Next internals, and the brand icons (favicon.ico/png, Next App
+  // Router icon.png / apple-icon.png served from src/app).
+  matcher: ["/((?!admin-api|api/|_next|favicon|icon|apple-icon).*)"],
 };
