@@ -18,6 +18,11 @@ const TITLES: Record<string, { t: string; s: string }> = {
   "/jobs": { t: "Jobs", s: "Listings across the 30-day publication window" },
   "/metrics": { t: "Metrics", s: "PRD §21 growth and funnel indicators" },
   "/reports": { t: "Reports", s: "User reports about profiles and jobs — 24h response target" },
+  "/chats": { t: "Chats", s: "End-to-end encrypted messaging — moderation works on metadata only" },
+  "/appeals": { t: "Appeals", s: "Suspended and rejected accounts asking for a second look" },
+  "/reviews": { t: "Reviews", s: "Blind-window moderation, flags and hidden reviews" },
+  "/promotions": { t: "Promotions", s: "Boosted-visibility purchases and cancellations" },
+  "/referrals": { t: "Referrals", s: "Earn-on-signup-and-pay programme" },
   "/audit": { t: "Audit Trail", s: "Every dashboard action, who did it and why" },
   "/admins": { t: "Dashboard Team", s: "Admin, support and finance accounts" }
 };
@@ -52,11 +57,21 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     router.replace("/login");
   };
 
-  const head = TITLES[pathname] || { t: pathname, s: "" };
+  // Exact match first, then the user-detail route (pathname "/users/<id>"
+  // would otherwise render as a raw path in the topbar).
+  const head =
+    TITLES[pathname] ||
+    (pathname.startsWith("/users/")
+      ? { t: "User profile", s: "Account, documents, payments and moderation history" }
+      : { t: pathname, s: "" });
   const initials = (email || "a").slice(0, 2).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-slate-100/70">
+    // lg:flex turns the shell into the standard sidebar row: the aside is
+    // position:sticky at desktop (IN normal flow), so without flex it stacked
+    // as a full-viewport-height block ABOVE the main column — the "huge space
+    // before the header" on every page. Mobile keeps the fixed drawer.
+    <div className="min-h-screen bg-slate-100/70 lg:flex">
       <Toaster />
 
       {/* Mobile drawer backdrop */}
@@ -151,7 +166,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main column */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen">
         {/* Topbar */}
         <header className="sticky top-0 z-30 h-16 bg-white/75 backdrop-blur-md border-b border-slate-200/70">
           <div className="h-full px-4 sm:px-6 flex items-center justify-between gap-4">
@@ -196,7 +211,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
         <footer className="px-4 sm:px-6 py-4 text-[11px] text-slate-400 flex flex-col sm:flex-row gap-1 sm:items-center sm:justify-between">
           <span>JobReady · HelpNest ops console</span>
-          <span>Gateway build 2026-10-21.18</span>
+          <span>Gateway build 2026-10-21.23</span>
         </footer>
       </div>
     </div>
