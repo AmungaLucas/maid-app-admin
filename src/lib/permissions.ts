@@ -22,6 +22,10 @@ export const can = {
   promotionCancel: (r: Role) => r === "admin"
 };
 
+// Nav visibility mirrors the gateway requireAdmin() allow-lists — including the
+// read endpoints (adminAuth.js: support = users/KYC/jobs/moderation, finance =
+// pricing/transactions/referrals). Pages reached by direct URL still enforce
+// server-side; buttons inside shared pages stay gated by can.*.
 export const NAV: {
   href: string;
   label: string;
@@ -30,19 +34,19 @@ export const NAV: {
   group: "Insights" | "Operations" | "Money" | "Governance";
 }[] = [
   { href: "/", label: "Overview", roles: ["admin", "support", "finance"], icon: "overview", group: "Insights" },
-  { href: "/metrics", label: "Metrics", roles: ["admin", "support", "finance"], icon: "metrics", group: "Insights" },
-  { href: "/users", label: "Users", roles: ["admin", "support", "finance"], icon: "users", group: "Operations" },
+  { href: "/metrics", label: "Metrics", roles: ["admin", "finance"], icon: "metrics", group: "Insights" },
+  { href: "/users", label: "Users", roles: ["admin", "support"], icon: "users", group: "Operations" },
   { href: "/kyc", label: "KYC Review", roles: ["admin", "support"], icon: "kyc", group: "Operations" },
-  { href: "/jobs", label: "Jobs", roles: ["admin", "support", "finance"], icon: "jobs", group: "Operations" },
-  { href: "/plans", label: "Plans & Pricing", roles: ["admin", "support", "finance"], icon: "plans", group: "Money" },
-  { href: "/transactions", label: "Transactions", roles: ["admin", "support", "finance"], icon: "transactions", group: "Money" },
-  { href: "/referrals", label: "Referrals", roles: ["admin", "support", "finance"], icon: "gift", group: "Money" },
-  { href: "/chats", label: "Chats", roles: ["admin", "support", "finance"], icon: "chat", group: "Operations" },
-  { href: "/appeals", label: "Appeals", roles: ["admin", "support", "finance"], icon: "flag", group: "Operations" },
-  { href: "/reports", label: "Reports", roles: ["admin", "support", "finance"], icon: "reports", group: "Operations" },
-  { href: "/reviews", label: "Reviews", roles: ["admin", "support", "finance"], icon: "star", group: "Operations" },
-  { href: "/promotions", label: "Promotions", roles: ["admin", "support", "finance"], icon: "boost", group: "Money" },
-  { href: "/audit", label: "Audit Trail", roles: ["admin", "support", "finance"], icon: "audit", group: "Governance" },
+  { href: "/jobs", label: "Jobs", roles: ["admin", "support"], icon: "jobs", group: "Operations" },
+  { href: "/plans", label: "Plans & Pricing", roles: ["admin", "finance"], icon: "plans", group: "Money" },
+  { href: "/transactions", label: "Transactions", roles: ["admin", "finance"], icon: "transactions", group: "Money" },
+  { href: "/referrals", label: "Referrals", roles: ["admin", "finance"], icon: "gift", group: "Money" },
+  { href: "/chats", label: "Chats", roles: ["admin", "support"], icon: "chat", group: "Operations" },
+  { href: "/appeals", label: "Appeals", roles: ["admin", "support"], icon: "flag", group: "Operations" },
+  { href: "/reports", label: "Reports", roles: ["admin", "support"], icon: "reports", group: "Operations" },
+  { href: "/reviews", label: "Reviews", roles: ["admin", "support"], icon: "star", group: "Operations" },
+  { href: "/promotions", label: "Promotions", roles: ["admin"], icon: "boost", group: "Money" },
+  { href: "/audit", label: "Audit Trail", roles: ["admin"], icon: "audit", group: "Governance" },
   { href: "/admins", label: "Dashboard Team", roles: ["admin"], icon: "team", group: "Governance" }
 ];
 
