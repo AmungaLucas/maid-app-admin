@@ -5,9 +5,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { navFor, Role } from "@/lib/permissions";
+import { canViewPath, navFor, rolesForPath, Role } from "@/lib/permissions";
 import { emailFromCookie, roleFromCookie } from "@/lib/api";
-import { Icon, Toaster } from "@/components/ui";
+import { Icon, Spinner, Toaster } from "@/components/ui";
 
 const TITLES: Record<string, { t: string; s: string }> = {
   "/": { t: "Overview", s: "Live platform health and revenue" },
@@ -39,11 +39,15 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<Role>("admin");
   const [email, setEmail] = useState("");
   const [navOpen, setNavOpen] = useState(false);
+  // False until the role cookie has been read client-side; prevents a flash
+  // of the full page (followed by a gateway 403) for out-of-role URLs.
+  const [roleReady, setRoleReady] = useState(false);
 
   useEffect(() => {
     const r = (roleFromCookie() || "admin") as Role;
     setRole(r);
     setEmail(emailFromCookie());
+    setRoleReady(true);
   }, [pathname]);
 
   useEffect(() => {
@@ -51,6 +55,11 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   const groups = useMemo(() => navFor(role), [role]);
+  // Direct-URL guard: a finance account typing /kyc gets a clear "not for
+  // your role" panel instead of a page shell that 403s on every request.
+  // The gateway still enforces the real boundary — this is presentation.
+  const allowed = canViewPath(role, pathname);
+  const allowedRoles = rolesForPath(pathname).join(" · ");
 
   const logout = async () => {
     await fetch("/admin-api/admin/logout", { method: "POST" });
@@ -205,7 +214,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
         <main className="flex-1">
           <div className="p-4 sm:p-6 lg:p-8 max-w-[1200px] mx-auto animate-fade-in">
-            {children}
+            {!roleReady ? (
+              <Spinner />
+            ) : allowed ? (
+              children
+            ) : (
+              <BlockedPanel roles={allowedRoles} />
+            )}
           </div>
         </main>
 
@@ -213,6 +228,33 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <span>JobReady · HelpNest ops console</span>
           <span>Gateway build 2026-10-21.23</span>
         </footer>
+      </div>
+    </div>
+  );
+}
+
+// Rendered when the signed-in role opens a URL its role cannot use.
+function BlockedPanel({ roles }: { roles: string }) {
+  return (
+    <div className="max-w-md mx-auto mt-8 sm:mt-14">
+      <div className="rounded-2xl bg-white border border-slate-200/80 shadow-lift p-8 text-center animate-scale-in">
+        <span className="inline-flex w-12 h-12 rounded-2xl bg-slate-100 items-center justify-center">
+          <Icon name="shield" className="w-6 h-6 text-slate-400" />
+        </span>
+        <h3 className="mt-4 text-base font-semibold text-slate-800">
+          Not available for your role
+        </h3>
+        <p className="mt-1.5 text-sm text-slate-500 leading-6">
+          This section is limited to {roles} accounts. If you need access, ask
+          an admin to update your dashboard role.
+        </p>
+        <a
+          href="/"
+          className="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-200/70 hover:bg-brand-100 transition"
+        >
+          <Icon name="chevronLeft" className="w-4 h-4" />
+          Back to Overview
+        </a>
       </div>
     </div>
   );

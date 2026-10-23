@@ -62,3 +62,33 @@ export function navFor(role: Role) {
   }
   return groups;
 }
+
+// Page-level guard for direct URL entry. The sidebar hides sections, but
+// nothing stopped a finance account from typing /kyc — the page shell would
+// render and then die on the gateway's 403. Derived from NAV so there is
+// exactly one source of truth; the gateway remains the real boundary.
+export function canViewPath(role: Role, pathname: string): boolean {
+  for (const item of NAV) {
+    if (!item.roles.includes(role)) continue;
+    if (item.href === "/") {
+      if (pathname === "/") return true;
+    } else if (
+      pathname === item.href ||
+      pathname.startsWith(item.href + "/")
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Which roles a path belongs to — used by the "not available for your role"
+// panel so the user knows who to ask for access.
+export function rolesForPath(pathname: string): Role[] {
+  const item = NAV.find(
+    (i) =>
+      i.href !== "/" &&
+      (pathname === i.href || pathname.startsWith(i.href + "/"))
+  );
+  return item ? item.roles : ["admin"];
+}
