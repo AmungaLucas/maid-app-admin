@@ -184,7 +184,14 @@ const ICON_PATHS: Record<string, React.ReactNode> = {
       <path d="M12 3l7.5 2.8v5.4c0 4.6-3 8.2-7.5 9.8-4.5-1.6-7.5-5.2-7.5-9.8V5.8L12 3Z" />
     </>
   ),
-  filter: <path d="M4 5.5h16l-6.2 7.2V19l-3.6-2v-4.3L4 5.5Z" />
+  filter: <path d="M4 5.5h16l-6.2 7.2V19l-3.6-2v-4.3L4 5.5Z" />,
+  layers: (
+    <>
+      <path d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z" />
+      <path d="m4.5 12.2 7.5 3.8 7.5-3.8" />
+      <path d="m4.5 16.7 7.5 3.8 7.5-3.8" />
+    </>
+  )
 };
 
 export function Icon({

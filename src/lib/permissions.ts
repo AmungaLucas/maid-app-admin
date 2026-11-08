@@ -47,6 +47,7 @@ export const NAV: {
   { href: "/reviews", label: "Reviews", roles: ["admin", "support"], icon: "star", group: "Operations" },
   { href: "/promotions", label: "Promotions", roles: ["admin"], icon: "boost", group: "Money" },
   { href: "/audit", label: "Audit Trail", roles: ["admin"], icon: "audit", group: "Governance" },
+  { href: "/architecture", label: "Architecture", roles: ["admin"], icon: "layers", group: "Governance" },
   { href: "/admins", label: "Dashboard Team", roles: ["admin"], icon: "team", group: "Governance" }
 ];
 
